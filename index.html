@@ -182,32 +182,28 @@
 </template>
 <script>
   'use strict'
+  var WIZARD_HEIGHT_RATIO = 1.337;
   var fireballSize = 22;
-
-  var getFireballSpeed = function(left) {
-    if (left) {
-      return 5;
-    }
-
-    return 2;
-  }
-
   var wizardSpeed = 3;
   var wizardWidth = 70;
 
+  var getFireballSpeed = function(left) {
+    return left ? 5 : 2;
+  }
+
   //Задание пропорциональной высоты мага
   var getWizardHeight = function() {
-    return 1.337 * wizardWidth;
+    return WIZARD_HEIGHT_RATIO * wizardWidth;
   }
 
   //Расчет положения мага по горизонтали
-  var getWizardX = function(width) {
+  function getWizardX(width) {
     return (width - wizardWidth)/2;
   }
 
   //Расчет положения мага по вертикали
-  var getWizardY = function(height) {
-    return height/3;
+  function getWizardY(height) {
+    return height/3 - getWizardHeight();
   }
 </script>
 <script src="js/game.js"></script>
