@@ -13,6 +13,9 @@ var BAR_GAP = 50;
 var TEXT_FONT = '16px PT Mono';
 var TEXT_COLOR = '#000';
 var USER_COLUMN_COLOR = 'rgba(255, 0, 0, 1)';
+var TITLE_POSITION_X = 130;
+var TITLE_POSITION_Y = 25;
+var LINE_HEIGHT = 20;
 
 var renderCloud = function (ctx, x, y, color) {
   ctx.fillStyle = color;
@@ -41,19 +44,16 @@ window.renderStatistics = function (ctx, players, times) {
     ctx.textBaseline = baseline;
   }
 
-  function showText(text, x, y) {
+  function showTitle(text, x, y) {
     ctx.fillText(text, x, y);
   }
 
   function getRandomColor() {
-    if (players[i] === 'Вы') {
-      ctx.fillStyle = USER_COLUMN_COLOR;
-    } else {
-      ctx.fillStyle = 'rgb(0,' + Math.floor(255 - 60.5 * i) + ',' + Math.floor(255 - 23.5 * i) + ')';
-    }
+    return 'rgb(0,' + Math.floor(255 - 60.5 * i) + ',' + Math.floor(255 - 23.5 * i) + ')';
   }
 
-  function renderPlayersColumns(x, y, width, height) {
+  function renderPlayersColumn(x, y, width, height, color) {
+    ctx.fillStyle = color;
     ctx.fillRect(x, y, width, height);
   }
 
@@ -62,9 +62,10 @@ window.renderStatistics = function (ctx, players, times) {
   for (var i = 0; i < players.length; i++) {
     var barSpace = BAR_X + (BAR_WIDTH + BAR_GAP) * i;
     var dynamicBarHeight = (BAR_HEIGHT * times[i]) / maxTime;
+    var currentColor = players[i] === 'Вы' ? USER_COLUMN_COLOR : getRandomColor();
 
     getRandomColor();
-    renderPlayersColumns(barSpace, BAR_Y, BAR_WIDTH, dynamicBarHeight);
+    renderPlayersColumn(barSpace, BAR_Y, BAR_WIDTH, dynamicBarHeight, currentColor);
 
     ctx.fillStyle = TEXT_COLOR;
     ctx.fillText(players[i], barSpace, 250);
@@ -72,6 +73,6 @@ window.renderStatistics = function (ctx, players, times) {
   }
 
   defineFontStyle(TEXT_FONT, TEXT_COLOR, 'hanging');
-  showText('Ура вы победили!', 130, 25);
-  showText('Список результатов:', 130, 45);
+  showTitle('Ура вы победили!', TITLE_POSITION_X, TITLE_POSITION_Y);
+  showTitle('Список результатов:', TITLE_POSITION_X, TITLE_POSITION_Y + LINE_HEIGHT);
 };
