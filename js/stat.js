@@ -5,17 +5,20 @@ var CLOUD_HEIGHT = 270;
 var CLOUD_X = 100;
 var CLOUD_Y = 10;
 var GAP = 10;
-var BAR_WIDTH = 40;
-var BAR_HEIGHT = -150;
-var BAR_X = 160;
-var BAR_Y = 230;
-var BAR_GAP = 50;
-var TEXT_FONT = '16px PT Mono';
+var COLUMN_WIDTH = 40;
+var COLUMN_HEIGHT = 150;
+var COLUMN_X = 160;
+var COLUMN_Y = 230;
+var COLUMN_GAP = 50;
+var PLAYER_NAME_Y = 250;
+var FONT_STYLE = '16px PT Mono';
 var TEXT_COLOR = '#000';
 var USER_COLUMN_COLOR = 'rgba(255, 0, 0, 1)';
 var TITLE_POSITION_X = 130;
 var TITLE_POSITION_Y = 25;
 var LINE_HEIGHT = 20;
+var cloudShadowX = CLOUD_X + GAP;
+var cloudShadowY = CLOUD_Y + GAP;
 
 var renderCloud = function (ctx, x, y, color) {
   ctx.fillStyle = color;
@@ -25,7 +28,7 @@ var renderCloud = function (ctx, x, y, color) {
 var getMaxElement = function (arr) {
   var maxElement = arr[0];
 
-  for (var i = 0; i < arr.length; i++) {
+  for (var i = 1; i < arr.length; i++) {
     if (arr[i] > maxElement) {
       maxElement = arr[i];
     }
@@ -35,16 +38,13 @@ var getMaxElement = function (arr) {
 };
 
 window.renderStatistics = function (ctx, players, times) {
-  renderCloud(ctx, CLOUD_X + GAP, CLOUD_Y + GAP, 'rgba(0, 0, 0, 0.7)');
+  renderCloud(ctx, cloudShadowX, cloudShadowY, 'rgba(0, 0, 0, 0.7)');
   renderCloud(ctx, CLOUD_X, CLOUD_Y, '#fff');
 
-  function defineFontStyle(fontFamily, textColor, baseline) {
+  function showText(text, x, y, fontFamily, textColor, baseline) {
     ctx.font = fontFamily;
     ctx.fillStyle = textColor;
     ctx.textBaseline = baseline;
-  }
-
-  function showTitle(text, x, y) {
     ctx.fillText(text, x, y);
   }
 
@@ -60,19 +60,17 @@ window.renderStatistics = function (ctx, players, times) {
   var maxTime = getMaxElement(times);
 
   for (var i = 0; i < players.length; i++) {
-    var barSpace = BAR_X + (BAR_WIDTH + BAR_GAP) * i;
-    var dynamicBarHeight = (BAR_HEIGHT * times[i]) / maxTime;
+    var columnSpace = COLUMN_X + (COLUMN_WIDTH + COLUMN_GAP) * i;
+    var dynamicColumnHeight = (COLUMN_HEIGHT * times[i]) / maxTime * -1;
+    var playerTimeY = dynamicColumnHeight + 225;
     var currentColor = players[i] === 'Вы' ? USER_COLUMN_COLOR : getRandomColor();
 
     getRandomColor();
-    renderPlayersColumn(barSpace, BAR_Y, BAR_WIDTH, dynamicBarHeight, currentColor);
-
-    ctx.fillStyle = TEXT_COLOR;
-    ctx.fillText(players[i], barSpace, 250);
-    ctx.fillText(Math.round(times[i]), barSpace, dynamicBarHeight + 225);
+    renderPlayersColumn(columnSpace, COLUMN_Y, COLUMN_WIDTH, dynamicColumnHeight, currentColor);
+    showText(players[i], columnSpace, PLAYER_NAME_Y, FONT_STYLE, TEXT_COLOR);
+    showText(Math.round(times[i]), columnSpace, playerTimeY, FONT_STYLE, TEXT_COLOR);
   }
 
-  defineFontStyle(TEXT_FONT, TEXT_COLOR, 'hanging');
-  showTitle('Ура вы победили!', TITLE_POSITION_X, TITLE_POSITION_Y);
-  showTitle('Список результатов:', TITLE_POSITION_X, TITLE_POSITION_Y + LINE_HEIGHT);
+  showText('Ура вы победили!', TITLE_POSITION_X, TITLE_POSITION_Y, FONT_STYLE, TEXT_COLOR, 'hanging');
+  showText('Список результатов:', TITLE_POSITION_X, TITLE_POSITION_Y + LINE_HEIGHT, FONT_STYLE, TEXT_COLOR, 'hanging');
 };
